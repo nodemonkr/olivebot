@@ -50,7 +50,6 @@ bracket_event.setup(bot, ADMIN_IDS)
 betting.setup(bot)
 shop.setup(bot)
 music.setup(bot)
-bot.run(
-    "MTM4MTU5OTQxODY0NTQ4MzYwMA.GJneep.EoJkqnpa7wmjtZ2bodIrcZBs00snwE0lxpkk5w")
+bot.run("MTM4MTU5OTQxODY0NTQ4MzYwMA.GJneep.EoJkqnpa7wmjtZ2bodIrcZBs00snwE0lxpkk5w")
 # print("TOKEN:", os.getenv("DISCORD_TOKEN"))
 # bot.run(os.getenv("DISCORD_TOKEN"))
