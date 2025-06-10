@@ -4,6 +4,7 @@ if not discord.opus.is_loaded():
 from discord.ext import commands
 from core import attendance, bank, rank, info, admin, randombox, shop, music, quiz_event, bracket_event
 import core.betting as betting
+import os
 from keepalive import keep_alive
 
 keep_alive()
@@ -16,14 +17,25 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 ADMIN_IDS = [1047192081828941845]
 
 
+# @bot.event
+# async def on_ready():
+#     print(f"{bot.user} 봇이 로그인되었습니다!")
+#     try:
+#         synced = await bot.tree.sync()
+#         print(f"슬래시 명령어 {len(synced)}개 동기화 완료!")
+#     except Exception as e:
+#         print(e)
+
 @bot.event
 async def on_ready():
-    print(f"{bot.user} 봇이 로그인되었습니다!")
-    try:
-        synced = await bot.tree.sync()
-        print(f"슬래시 명령어 {len(synced)}개 동기화 완료!")
-    except Exception as e:
-        print(e)
+    print(f"✅ {bot.user} 로그인 완료!")
+
+    async def keep_active():
+        while True:
+            print("🟢 봇이 깨어 있습니다.")
+            await asyncio.sleep(60)
+
+    bot.loop.create_task(keep_active())
 
 
 # 모듈별 슬래시 명령어 등록
@@ -38,5 +50,6 @@ bracket_event.setup(bot, ADMIN_IDS)
 betting.setup(bot)
 shop.setup(bot)
 music.setup(bot)
-bot.run(
-    "MTM4MTU5OTQxODY0NTQ4MzYwMA.GJneep.EoJkqnpa7wmjtZ2bodIrcZBs00snwE0lxpkk5w")
+# bot.run(
+#     "MTM4MTU5OTQxODY0NTQ4MzYwMA.GJneep.EoJkqnpa7wmjtZ2bodIrcZBs00snwE0lxpkk5w")
+bot.run(os.getenv("DISCORD_TOKEN"))
