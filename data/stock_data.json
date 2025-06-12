@@ -39,5 +39,21 @@
     ],
     "last_updated": "2025-06-12",
     "delisted": true
+  },
+  "클라우드봇": {
+    "price": 10000,
+    "trend": "up",
+    "bias": 0,
+    "locked": false,
+    "history": [],
+    "trend_days": 0
+  },
+  "트리푸드": {
+    "price": 5000,
+    "trend": "up",
+    "bias": 0,
+    "locked": false,
+    "history": [],
+    "trend_days": 0
   }
 }

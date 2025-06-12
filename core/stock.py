@@ -410,3 +410,28 @@ def setup(bot):
 
         save_json("data/news_data.json", {})  # 빈 딕셔너리로 덮어쓰기
         await interaction.response.send_message("🧹 모든 뉴스가 초기화되었습니다.", ephemeral=True)
+
+    @bot.tree.command(name="종목추가", description="새로운 종목을 등록합니다. (관리자 전용)")
+    @app_commands.describe(name="종목명", price="초기 주가")
+    async def 종목추가(interaction: discord.Interaction, name: str, price: int):
+        if interaction.user.id not in ADMIN_IDS:
+            await interaction.response.send_message("⚠️ 관리자만 사용할 수 있습니다.", ephemeral=True)
+            return
+
+        stocks = load_json(DATA_FILE)
+        if name in stocks:
+            await interaction.response.send_message("❌ 이미 존재하는 종목입니다.", ephemeral=True)
+            return
+
+        stocks[name] = {
+            "price": price,
+            "trend": "up",
+            "bias": 0,
+            "locked": False,
+            "history": [],
+            "trend_days": 0
+        }
+
+        save_json(DATA_FILE, stocks)
+        await interaction.response.send_message(
+            f"✅ `{name}` 종목이 🫒 {price} 올리브로 등록되었습니다.", ephemeral=True)
