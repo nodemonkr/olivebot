@@ -1,6 +1,4 @@
 import discord
-# if not discord.opus.is_loaded():
-#     discord.opus.load_opus('libopus.so')
 from discord.ext import commands
 from core import attendance, bank, rank, info, admin, randombox, shop, music, quiz_event, bracket_event
 import core.betting as betting
