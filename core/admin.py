@@ -1,7 +1,9 @@
+import os 
 import discord
+import zipfile
 from discord import app_commands
 from core.utils import load_data, save_data
-
+from datetime import datetime
 
 def setup(bot, ADMIN_IDS):
 
@@ -60,3 +62,23 @@ def setup(bot, ADMIN_IDS):
         save_data(data)
         await interaction.response.send_message(
             f"{user.mention}님의 🌿 올리브 {amount}개를 회수했습니다.")
+    
+    @bot.tree.command(name="백업요청", description="data 폴더의 모든 데이터를 압축하여 DM으로 전송합니다.")
+    async def 백업요청(interaction: discord.Interaction):
+        if interaction.user.id not in ADMIN_IDS:
+            await interaction.response.send_message("관리자만 사용할 수 있습니다.", ephemeral=True)
+            return
+
+        today = datetime.now().strftime("%Y-%m-%d")
+        zip_filename = f"backup_{today}.zip"
+
+        try:
+            with zipfile.ZipFile(zip_filename, "w") as zipf:
+                for filename in os.listdir("data"):
+                    if filename.endswith(".json"):
+                        zipf.write(os.path.join("data", filename), arcname=filename)
+
+            await interaction.user.send(file=discord.File(zip_filename))
+            await interaction.response.send_message(f"✅ DM으로 `{zip_filename}` 파일을 전송했습니다.", ephemeral=True)
+        except Exception as e:
+            await interaction.response.send_message(f"❌ 전송 실패: {e}", ephemeral=True)

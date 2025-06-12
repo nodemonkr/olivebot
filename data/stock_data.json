@@ -1,0 +1,43 @@
+{
+  "팔라딘타워": {
+    "price": 793,
+    "trend": "up",
+    "trend_days": 0,
+    "initial": 1000,
+    "history": [
+      792,
+      792,
+      790,
+      788,
+      793,
+      794,
+      797,
+      796,
+      794,
+      793
+    ],
+    "last_updated": "2025-06-12",
+    "delisted": true
+  },
+  "마녀센터": {
+    "price": 752,
+    "trend": "up",
+    "trend_days": 0,
+    "last_trade": "2025-06-12",
+    "initial": 1000,
+    "history": [
+      766,
+      763,
+      768,
+      769,
+      765,
+      758,
+      750,
+      751,
+      758,
+      752
+    ],
+    "last_updated": "2025-06-12",
+    "delisted": true
+  }
+}

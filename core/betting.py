@@ -6,21 +6,21 @@ import random
 
 ADMIN_IDS = [1047192081828941845]  # 관리자 ID 리스트
 
-betting_settings = {"success_rate": 0.5, "payout_multiplier": 2.0}
+betting_settings = {"success_rate": 0.2, "payout_multiplier": 2.0}
 challenge_requests = {}  # {도전자ID: (상대ID, 베팅금액)}
 
 
 def load_betting_settings():
     global betting_settings
     try:
-        with open("betting_settings.json", "r", encoding="utf-8") as f:
+        with open("data/betting_settings.json", "r", encoding="utf-8") as f:
             betting_settings.update(json.load(f))
     except FileNotFoundError:
         save_betting_settings()
 
 
 def save_betting_settings():
-    with open("betting_settings.json", "w", encoding="utf-8") as f:
+    with open("data/betting_settings.json", "w", encoding="utf-8") as f:
         json.dump(betting_settings, f, ensure_ascii=False, indent=4)
 
 
