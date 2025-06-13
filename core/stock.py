@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 from typing import List
+import random
 
 # 한글 깨짐 방지 설정
 matplotlib.rcParams['font.family'] = 'Malgun Gothic'  # Windows 기준
@@ -62,6 +63,20 @@ def update_trade_log(name: str, qty: int, action: str):
     trades[name][action] += qty
     save_json(TRADE_LOG_FILE, trades)
 
+def random_market_change():
+    roll = random.random()
+    if roll < 0.1:
+        return random.uniform(+0.03, +0.05)  # 큰 상승
+    elif roll < 0.3:
+        return random.uniform(+0.01, +0.03)  # 중간 상승
+    elif roll < 0.7:
+        return random.uniform(-0.01, +0.01)  # 약한 변동
+    elif roll < 0.9:
+        return random.uniform(-0.03, -0.01)  # 중간 하락
+    else:
+        return random.uniform(-0.05, -0.03)  # 큰 하락
+
+
 def update_stock_prices():
     stocks = load_json(DATA_FILE)
     trades = load_json(TRADE_LOG_FILE)
@@ -80,23 +95,28 @@ def update_stock_prices():
         total = demand + supply if demand + supply > 0 else 1
         demand_supply_rate = (demand - supply) / total * 0.02
 
-        manual_bias = tlog.get("bias", None)
-        if manual_bias is not None:
-            trend_bias = manual_bias
-        else:
-            trend_bias = -0.005
-            for n in news.get(name, []):
-                if not n.get("applied") and n["date"] <= today:
-                    influence = n["influence"]
-                    trend_bias = (influence - 3) * 0.01  # influence 5 -> +0.02, 1 -> -0.02
-                    n["applied"] = True
+        manual_bias = tlog.get("bias")
+        trend_bias = manual_bias if manual_bias is not None else 0
 
-        noise = random.gauss(0, 0.005)
-        change = demand_supply_rate + trend_bias + noise
+        for n in news.get(name, []):
+            if not n.get("applied") and n["date"] <= today:
+                trend_bias += (n["influence"] - 3) * 0.01
+                n["applied"] = True
+
+        base_change = random_market_change()
+        change = base_change + demand_supply_rate + trend_bias
         change = min(max(change, -settings["price_ceiling"]), settings["price_ceiling"])
 
         old_price = s["price"]
-        new_price = max(1, int(old_price * (1 + change)))
+
+        # ✅ 최초 초기값 설정
+        if "initial" not in s:
+            s["initial"] = old_price
+        initial_price = s["initial"]
+
+        new_price = int(old_price * (1 + change))
+        new_price = max(1, min(new_price, int(initial_price * 2)))
+
         s["price"] = new_price
         s.setdefault("history", []).append(new_price)
         if len(s["history"]) > 10:
@@ -104,13 +124,16 @@ def update_stock_prices():
         s["last_updated"] = today
 
         result.append(f"{name}: {old_price} → {new_price} ({change*100:+.2f}%)")
-        trades[name] = {"buy": 0, "sell": 0, "bias": manual_bias if manual_bias is not None else 0.0}
+
+        trades[name]["buy"] = 0
+        trades[name]["sell"] = 0
+        if manual_bias is not None:
+            trades[name]["bias"] = manual_bias
 
     save_json(DATA_FILE, stocks)
     save_json(NEWS_FILE, news)
     save_json(TRADE_LOG_FILE, trades)
     return result
-
 def setup(bot):
     async def stock_name_autocomplete(interaction: discord.Interaction, current: str):
         stocks = load_json(DATA_FILE)

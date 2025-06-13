@@ -67,5 +67,4 @@ bracket_event.setup(bot, ADMIN_IDS)
 stock.setup(bot)
 betting.setup(bot)
 shop.setup(bot)
-
 bot.run(os.getenv("DISCORD_TOKEN_NEW"))
