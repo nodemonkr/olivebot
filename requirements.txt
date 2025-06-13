@@ -3,3 +3,4 @@ flask
 yt-dlp
 pynacl
 pytz
+matplotlib
