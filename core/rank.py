@@ -2,22 +2,31 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from core.utils import load_data
+import asyncio
 
 def setup(bot: commands.Bot):
-    @bot.tree.command(name="랭킹", description="올리브 랭킹 상위 10명을 보여줍니다.")
+    @bot.tree.command(name="랭킹", description="올리브 랭킹 Top 10")
     async def 랭킹(interaction: discord.Interaction):
+        await interaction.response.defer()
+
         data = load_data()
-        sorted_users = sorted(data.items(), key=lambda x: x[1].get("olive", 0), reverse=True)
-        message = "🏆 올리브 랭킹 Top 10\n"
+        sorted_users = sorted(data.items(), key=lambda x: x[1].get("olive", 0), reverse=True)[:10]
 
-        for i, (user_id, user_data) in enumerate(sorted_users[:10], start=1):
+        async def get_name(user_id):
             try:
-                member = interaction.guild.get_member(int(user_id)) or await interaction.guild.fetch_member(int(user_id))
-                name = member.display_name
+                member = interaction.guild.get_member(int(user_id))
+                if member:
+                    return member.display_name
+                member = await interaction.guild.fetch_member(int(user_id))
+                return member.display_name
             except:
-                name = f"알 수 없음 ({user_id})"
+                return f"유저({user_id})"
 
-            olive = user_data.get("olive", 0)
+        names = await asyncio.gather(*(get_name(uid) for uid, _ in sorted_users))
+
+        message = "🏆 올리브 랭킹 Top 10\n"
+        for i, ((uid, udata), name) in enumerate(zip(sorted_users, names), start=1):
+            olive = udata.get("olive", 0)
             message += f"{i}위: {name} - 🌿 {olive}개 올리브\n"
 
-        await interaction.response.send_message(message)
+        await interaction.followup.send(message)

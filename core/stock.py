@@ -6,6 +6,29 @@ from discord.ext import tasks
 import json, random, os
 from datetime import datetime, timedelta
 from core.utils import load_data, save_data
+import asyncio
+import matplotlib.pyplot as plt
+import matplotlib
+import numpy as np
+from typing import List
+
+# 한글 깨짐 방지 설정
+matplotlib.rcParams['font.family'] = 'Malgun Gothic'  # Windows 기준
+matplotlib.rcParams['axes.unicode_minus'] = False
+
+class StockNameConverter(app_commands.Transformer):
+    async def transform(self, interaction: discord.Interaction, value: str) -> str:
+        return value
+
+    async def autocomplete(self, interaction: discord.Interaction, current: str) -> List[app_commands.Choice[str]]:
+        with open("data/stock_data.json", "r", encoding="utf-8") as f:
+            stock_data = json.load(f)
+
+        return [
+            app_commands.Choice(name=name, value=name)
+            for name in stock_data.keys()
+            if current.lower() in name.lower()
+        ][:25]
 
 DATA_FILE = "data/stock_data.json"
 USER_FILE = "data/users.json"
@@ -100,7 +123,7 @@ def setup(bot):
             await interaction.response.send_message("관리자만 사용할 수 있습니다.", ephemeral=True)
             return
         result = update_stock_prices()
-        await interaction.response.send_message("\n".join(result))
+        await interaction.response.send_message("\n".join(result), ephemeral=True)
 
     @bot.tree.command(name="주식구매", description="주식을 구매합니다.")
     @app_commands.describe(name="종목", qty="구매 수량")
@@ -213,25 +236,28 @@ def setup(bot):
         msg.append(f"총 평가액: 🫒{total}개 올리브")
         await interaction.response.send_message("\n".join(msg), ephemeral=True)
 
-    @bot.tree.command(name="주식정보", description="종목의 현재가와 추세를 확인합니다.")
-    @app_commands.describe(name="조회할 종목 이름")
-    @app_commands.autocomplete(name=stock_name_autocomplete)
-    async def 주식정보(interaction: discord.Interaction, name: str):
-        stocks = load_json(DATA_FILE)
-        s = stocks.get(name)
-        if not s or s.get("delisted"):
-            await interaction.response.send_message("존재하지 않거나 상장폐지된 종목입니다.", ephemeral=True)
-            return
-        history = s.get("history", [s["price"]])
-        prev = history[-2] if len(history) >= 2 else s["price"]
-        rate = (s["price"] - prev) / prev * 100 if prev else 0
-        msg = f"📊 {name}\n현재가: 🫒 {s['price']}개 올리브\n등락률: {rate:+.2f}%"
-        await interaction.response.send_message(msg, ephemeral=True)
+    # @bot.tree.command(name="주식정보", description="종목의 현재가와 추세를 확인합니다.")
+    # @app_commands.describe(name="조회할 종목 이름")
+    # @app_commands.autocomplete(name=stock_name_autocomplete)
+    # async def 주식정보(interaction: discord.Interaction, name: str):
+    #     stocks = load_json(DATA_FILE)
+    #     s = stocks.get(name)
+    #     if not s or s.get("delisted"):
+    #         await interaction.response.send_message("존재하지 않거나 상장폐지된 종목입니다.", ephemeral=True)
+    #         return
+    #     history = s.get("history", [s["price"]])
+    #     prev = history[-2] if len(history) >= 2 else s["price"]
+    #     rate = (s["price"] - prev) / prev * 100 if prev else 0
+    #     msg = f"📊 {name}\n현재가: 🫒 {s['price']}개 올리브\n등락률: {rate:+.2f}%"
+    #     await interaction.response.send_message(msg, ephemeral=True)
 
     @bot.tree.command(name="주식왕", description="수익률 기준 주식 랭킹을 보여줍니다.")
     async def 주식왕(interaction: discord.Interaction):
-        users = load_json(USER_FILE)
-        stocks = load_json(DATA_FILE)
+        await interaction.response.defer()  # 응답 예약
+
+        users = load_data()
+        stocks = load_json("data/stock_data.json")
+
         ranking = []
         for uid, udata in users.items():
             udata.setdefault("stocks", {})
@@ -241,14 +267,24 @@ def setup(bot):
                     cur = stocks[name]["price"]
                     profit += (cur - p["avg"]) * p["qty"]
             ranking.append((uid, profit))
-        ranking.sort(key=lambda x: x[1], reverse=True)
 
-        lines = ["🏆 주식 수익 랭킹"]
-        for i, (uid, profit) in enumerate(ranking[:10], 1):
-            member = interaction.guild.get_member(int(uid)) or await interaction.guild.fetch_member(int(uid))
-            name = member.display_name if member else f"유저({uid})"
-            lines.append(f"{i}. {name}: 🫒{profit:+}개 올리브")
-        await interaction.response.send_message("\n".join(lines), ephemeral=True)
+        ranking.sort(key=lambda x: x[1], reverse=True)  # 상위 10명 정렬
+        top10 = ranking[:10]
+
+        async def get_name(user_id):
+            try:
+                member = interaction.guild.get_member(int(user_id)) or await interaction.guild.fetch_member(int(user_id))
+                return member.display_name
+            except Exception:
+                return f"유저({user_id})"
+
+        names = await asyncio.gather(*(get_name(uid) for uid, _ in top10))
+
+        msg = ["🏆 주식 수익률 랭킹"]
+        for i, ((uid, profit), name) in enumerate(zip(top10, names), 1):
+            msg.append(f"{i}. {name}: 수익량 -> 🫒{profit:+} 올리브")
+
+        await interaction.followup.send("\n".join(msg), ephemeral=False)  # 전체 공개
 
     @bot.tree.command(name="주식종목", description="현재 상장된 모든 종목을 확인합니다.")
     async def 주식종목(interaction: discord.Interaction):
@@ -262,7 +298,7 @@ def setup(bot):
             prev = history[-2] if len(history) >= 2 else price
             rate = (price - prev) / prev * 100 if prev else 0
             msg.append(f"- {name}: 🫒{price}개 올리브 ({rate:+.2f}%)")
-        await interaction.response.send_message("\n".join(msg), ephemeral=True)
+        await interaction.response.send_message("\n".join(msg))
 
     @bot.tree.command(name="추세설정", description="특정 종목의 추세값을 수동 설정합니다. (관리자용)")
     @app_commands.describe(name="종목명", bias="추세값 (-0.05 ~ +0.05)")
@@ -372,18 +408,26 @@ def setup(bot):
 
     @bot.tree.command(name="상장폐지", description="지정한 종목을 수동 폐지합니다.")
     @app_commands.describe(name="종목 이름")
-    @app_commands.autocomplete(name=stock_name_autocomplete)
+    @app_commands.autocomplete(name=StockNameConverter().autocomplete)
     async def 상장폐지(interaction: discord.Interaction, name: str):
         if interaction.user.id not in ADMIN_IDS:
             await interaction.response.send_message("⚠️ 관리자만 사용할 수 있습니다.", ephemeral=True)
             return
-        stocks = load_json(DATA_FILE)
-        if name not in stocks:
-            await interaction.response.send_message("해당 종목이 존재하지 않습니다.", ephemeral=True)
+
+        with open("data/stock_data.json", "r", encoding="utf-8") as f:
+            stock_data = json.load(f)
+
+        if name not in stock_data:
+            await interaction.response.send_message("❌ 해당 종목은 존재하지 않습니다.", ephemeral=True)
             return
-        stocks[name]["delisted"] = True
-        save_json(DATA_FILE, stocks)
-        await interaction.response.send_message(f"❌ {name} 종목이 상장폐지되었습니다.")
+
+        del stock_data[name]
+
+        with open("data/stock_data.json", "w", encoding="utf-8") as f:
+            json.dump(stock_data, f, ensure_ascii=False, indent=2)
+
+        await interaction.response.send_message(f"🗑️ `{name}` 종목이 상장폐지되어 데이터에서 제거되었습니다.")
+
 
     @bot.tree.command(name="뉴스삭제", description="특정 종목의 뉴스를 모두 삭제합니다.")
     @app_commands.describe(name="뉴스를 삭제할 종목 이름")
@@ -435,3 +479,42 @@ def setup(bot):
         save_json(DATA_FILE, stocks)
         await interaction.response.send_message(
             f"✅ `{name}` 종목이 🫒 {price} 올리브로 등록되었습니다.", ephemeral=True)
+
+
+    @bot.tree.command(name="주식그래프", description="특정 종목의 가격 변동 그래프를 확인합니다.")
+    @app_commands.describe(name="확인할 종목명")
+    @app_commands.rename(name="종목")
+    @app_commands.autocomplete(name=StockNameConverter().autocomplete)
+    async def 주식그래프(interaction: discord.Interaction, name: str):
+        with open("data/stock_data.json", "r", encoding="utf-8") as f:
+            stock_data = json.load(f)
+
+        if name not in stock_data:
+            await interaction.response.send_message("❌ 해당 종목이 존재하지 않습니다.", ephemeral=True)
+            return
+
+        history = stock_data[name].get("history", [])
+        if len(history) < 2:
+            await interaction.response.send_message("📉 해당 종목은 기록된 가격 변화가 부족합니다.", ephemeral=True)
+            return
+
+        plt.style.use('ggplot')
+        fig, ax = plt.subplots(figsize=(10, 5))
+
+        x = np.arange(len(history))
+        y = np.array(history)
+        ax.plot(x, y, marker="o", linewidth=2.5, label=name)
+
+        ax.set_title(f"📈 {name} 가격 변화 추이", fontsize=16, weight='bold')
+        ax.set_xlabel("갱신 순서", fontsize=12)
+        ax.set_ylabel("가격 (올리브)", fontsize=12)
+        ax.tick_params(axis='both', labelsize=10)
+        ax.grid(True, alpha=0.3)
+        ax.legend(fontsize=10)
+        fig.tight_layout()
+
+        path = "stock_graph.png"
+        fig.savefig(path, dpi=180)
+        plt.close(fig)
+
+        await interaction.response.send_message(file=discord.File(path))

@@ -1,59 +1,84 @@
 {
-  "팔라딘타워": {
-    "price": 793,
-    "trend": "up",
-    "trend_days": 0,
-    "initial": 1000,
-    "history": [
-      792,
-      792,
-      790,
-      788,
-      793,
-      794,
-      797,
-      796,
-      794,
-      793
-    ],
-    "last_updated": "2025-06-12",
-    "delisted": true
-  },
-  "마녀센터": {
-    "price": 752,
-    "trend": "up",
-    "trend_days": 0,
-    "last_trade": "2025-06-12",
-    "initial": 1000,
-    "history": [
-      766,
-      763,
-      768,
-      769,
-      765,
-      758,
-      750,
-      751,
-      758,
-      752
-    ],
-    "last_updated": "2025-06-12",
-    "delisted": true
-  },
   "클라우드봇": {
-    "price": 10000,
+    "price": 9798,
     "trend": "up",
     "bias": 0,
     "locked": false,
-    "history": [],
-    "trend_days": 0
+    "history": [
+      9816,
+      9857,
+      9850,
+      9806,
+      9765,
+      9773,
+      9757,
+      9744,
+      9747,
+      9798
+    ],
+    "trend_days": 0,
+    "last_updated": "2025-06-14"
   },
   "트리푸드": {
-    "price": 5000,
+    "price": 4519,
     "trend": "up",
     "bias": 0,
     "locked": false,
-    "history": [],
-    "trend_days": 0
+    "history": [
+      4474,
+      4449,
+      4456,
+      4447,
+      4471,
+      4463,
+      4497,
+      4490,
+      4475,
+      4519
+    ],
+    "trend_days": 0,
+    "last_updated": "2025-06-14",
+    "last_trade": "2025-06-12"
+  },
+  "알비전자": {
+    "price": 1152,
+    "trend": "up",
+    "bias": 0,
+    "locked": false,
+    "history": [
+      1161,
+      1166,
+      1161,
+      1152,
+      1148,
+      1151,
+      1157,
+      1153,
+      1155,
+      1152
+    ],
+    "trend_days": 0,
+    "last_updated": "2025-06-14",
+    "last_trade": "2025-06-13"
+  },
+  "올리브영": {
+    "price": 492,
+    "trend": "up",
+    "bias": 0,
+    "locked": false,
+    "history": [
+      481,
+      482,
+      486,
+      488,
+      491,
+      488,
+      484,
+      487,
+      487,
+      492
+    ],
+    "trend_days": 0,
+    "last_updated": "2025-06-14"
   }
 }

@@ -1,31 +1,83 @@
 {
     "638365131729797151": {
-        "olive": 4542,
-        "last_check": ""
+        "olive": 6242,
+        "last_check": "2025-06-13",
+        "display_name": "[Olive] MrOoO12"
     },
     "457623929360482304": {
-        "olive": 1150,
-        "last_check": ""
+        "olive": 2375,
+        "last_check": "2025-06-14",
+        "display_name": "[Olive]Lasportiva",
+        "stocks": {},
+        "streak": 1
     },
     "1375742715773452299": {
-        "olive": 0,
+        "olive": 1000,
         "last_check": "2025-06-12",
         "display_name": "[Olive]soolike"
     },
     "1375744654338691144": {
-        "olive": 400,
-        "last_check": ""
+        "olive": 1505,
+        "last_check": "2025-06-13",
+        "display_name": "[Olive]sycute",
+        "streak": 1
     },
     "1306623706688258150": {
-        "olive": 400,
-        "last_check": ""
+        "olive": 1700,
+        "last_check": "2025-06-13",
+        "display_name": "judy778"
     },
     "1236851683636674612": {
-        "olive": 250,
-        "last_check": ""
+        "olive": 3100,
+        "last_check": "2025-06-13",
+        "display_name": "[Olive]LeKazuha"
     },
     "1347956538211569787": {
         "olive": 100,
+        "last_check": ""
+    },
+    "266817724779462658": {
+        "olive": 1000,
+        "last_check": "2025-06-12",
+        "display_name": "[Olive]Marco62"
+    },
+    "578608027322548224": {
+        "olive": 0,
+        "last_check": "2025-06-13",
+        "display_name": "[Olive]nomunomuqueen",
+        "stocks": {}
+    },
+    "377762408057405450": {
+        "olive": 1005,
+        "last_check": "2025-06-14",
+        "display_name": "[Olive]JSHOON",
+        "streak": 1
+    },
+    "1047192081828941845": {
+        "olive": 150,
+        "last_check": "2025-06-14",
+        "stocks": {
+            "트리푸드": {
+                "qty": 1,
+                "avg": 4956
+            }
+        },
+        "display_name": "[Olive]KoreaWar",
+        "streak": 2
+    },
+    "568285866338811905": {
+        "olive": 1205,
+        "last_check": "2025-06-14",
+        "display_name": "[Olive]carorine",
+        "streak": 1
+    },
+    "374254990249951232": {
+        "olive": 100,
+        "last_check": "2025-06-12",
+        "display_name": "[Olive]SharingCHO"
+    },
+    "937028199362232430": {
+        "olive": 1000,
         "last_check": ""
     }
 }

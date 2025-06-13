@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from core import attendance, bank, rank, info, admin, randombox, shop, music, quiz_event, bracket_event
+from core import attendance, bank, rank, info, admin, randombox, shop, quiz_event, bracket_event
 import core.betting as betting
 import core.stock as stock
 from background_tasks import setup_background
@@ -67,5 +67,5 @@ bracket_event.setup(bot, ADMIN_IDS)
 stock.setup(bot)
 betting.setup(bot)
 shop.setup(bot)
-music.setup(bot)
-bot.run(os.getenv("DISCORD_TOKEN_NEW"))
+bot.run("MTM4MTU5OTQxODY0NTQ4MzYwMA.G_5ZEI.OieF2NhEGkyQFKGsdkOTTgs3bjggOAeJCtYq1g")
+# bot.run(os.getenv("DISCORD_TOKEN_NEW"))
