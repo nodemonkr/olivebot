@@ -46,7 +46,7 @@ def setup(bot):
 
         # ✅ interaction 만료 방지
         try:
-            await interaction.response.defer(ephemeral=True)
+            await interaction.response.defer()
         except (discord.NotFound, discord.InteractionResponded):
             return
 

@@ -3,20 +3,35 @@ from discord import app_commands
 
 # 상점에 등록된 아이템 목록
 shop_items = {
-    "지혜의서적": {
-        "price": 100,
-        "emoji": "📕",
-        "description": "숙작 아이템"
-    },
     "착취한에너지": {
         "price": 100,
         "emoji": "🔵",
-        "description": "옵차 아이템"
+        "description": "기타 아이템"
     },
     "공허한멧돼지": {
-        "price": 3000,
+        "price": 4000,
         "emoji": "🐗",
-        "description": "안장 달린 야생 멧돼지"
+        "description": "탈것"
+    },
+    "조커 신발": {
+        "price": 30000,
+        "emoji": "👞",
+        "description": "스킨 외형"
+    },    
+    "엘리트 멧돼지": {
+        "price": 50000,
+        "emoji": "🐗",
+        "description": "탈것"
+    },
+    "조커 의상": {
+        "price": 65000,
+        "emoji": "🥼",
+        "description": "스킨 외형"
+    },
+    "언데드의 해골": {
+        "price": 95000,
+        "emoji": "🪖",
+        "description": "스킨 외형"
     },
 }
 

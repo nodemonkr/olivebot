@@ -1,24 +1,26 @@
 {
     "638365131729797151": {
-        "olive": 6242,
+        "olive": 6292,
         "last_check": "2025-06-13",
-        "display_name": "[Olive] MrOoO12"
+        "display_name": "[Olive] MrOoO12",
+        "streak": 0,
+        "stocks": {}
     },
     "457623929360482304": {
-        "olive": 2375,
-        "last_check": "2025-06-14",
+        "olive": 2485,
+        "last_check": "2025-06-15",
         "display_name": "[Olive]Lasportiva",
         "stocks": {},
-        "streak": 1
+        "streak": 2
     },
     "1375742715773452299": {
-        "olive": 1000,
+        "olive": 3250,
         "last_check": "2025-06-12",
         "display_name": "[Olive]soolike"
     },
     "1375744654338691144": {
-        "olive": 1505,
-        "last_check": "2025-06-13",
+        "olive": 1610,
+        "last_check": "2025-06-15",
         "display_name": "[Olive]sycute",
         "streak": 1
     },
@@ -38,9 +40,10 @@
         "last_check": ""
     },
     "266817724779462658": {
-        "olive": 1000,
-        "last_check": "2025-06-12",
-        "display_name": "[Olive]Marco62"
+        "olive": 1605,
+        "last_check": "2025-06-15",
+        "display_name": "[Olive]Marco62",
+        "streak": 1
     },
     "578608027322548224": {
         "olive": 0,
@@ -55,12 +58,16 @@
         "streak": 1
     },
     "1047192081828941845": {
-        "olive": 150,
+        "olive": 350,
         "last_check": "2025-06-14",
         "stocks": {
             "트리푸드": {
                 "qty": 1,
                 "avg": 4956
+            },
+            "올리브영": {
+                "qty": 2,
+                "avg": 421
             }
         },
         "display_name": "[Olive]KoreaWar",
@@ -80,5 +87,21 @@
     "937028199362232430": {
         "olive": 1000,
         "last_check": ""
+    },
+    "1381642311724826624": {
+        "olive": 3200,
+        "last_check": "2025-06-15",
+        "stocks": {
+            "올리브영": {
+                "qty": 2,
+                "avg": 356
+            },
+            "클라우드봇": {
+                "qty": 1,
+                "avg": 9263
+            }
+        },
+        "display_name": "rootsomes",
+        "streak": 1
     }
 }
